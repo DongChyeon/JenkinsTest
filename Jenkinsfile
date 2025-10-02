@@ -46,5 +46,20 @@ pipeline {
         }
       }
     }
+
+    stage('SnoarQube Analysis') {
+      steps {
+        withSonarQubeEnv('LocalSonar') {
+          script {
+            def scannerHome = tool 'SonarQubeScanner'
+            sh """
+              set -e
+              test -f reports/coverage.xml || echo '<coverage/>' > reports/coverage.xml
+              "${scannerHome}/bin/sonar-scanner"
+            """
+          }
+        }
+      }
+    }
   }
 }
